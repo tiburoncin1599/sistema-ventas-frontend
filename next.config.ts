@@ -1,8 +1,10 @@
 import type { NextConfig } from 'next';
 
-const API_HOST = process.env.NEXT_PUBLIC_API_URL
-  ? new URL(process.env.NEXT_PUBLIC_API_URL).hostname
-  : 'localhost';
+const rawUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+const API_HOST = rawUrl.startsWith('http')
+  ? new URL(rawUrl).hostname
+  : rawUrl;
 
 const nextConfig: NextConfig = {
   images: {
