@@ -21,7 +21,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
-  if (isAdmin && (!usuario || !adminRoles.includes(usuario.rol))) {
+  if (isAdmin && (!usuario || !usuario.rol || !adminRoles.includes(usuario.rol))) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
