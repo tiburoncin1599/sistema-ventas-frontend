@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next';
 
-const rawUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const rawUrl = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-c811d.up.railway.app';
 
 const API_HOST = rawUrl.startsWith('http')
   ? new URL(rawUrl).hostname
@@ -9,12 +9,6 @@ const API_HOST = rawUrl.startsWith('http')
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3001',
-        pathname: '/uploads/**',
-      },
       {
         protocol: 'https',
         hostname: API_HOST,

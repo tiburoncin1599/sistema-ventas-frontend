@@ -38,7 +38,7 @@ export default function AdminVentas() {
         </div>
         <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl p-6">
           <p className="text-green-600 dark:text-green-400 font-medium mb-1">Total vendido</p>
-          <p className="text-4xl font-bold text-green-700 dark:text-green-300">${totalGeneral.toFixed(2)}</p>
+          <p className="text-4xl font-bold text-green-700 dark:text-green-300">Bs${totalGeneral.toFixed(2)}</p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-2xl p-6">
           <p className="text-purple-600 dark:text-purple-400 font-medium mb-1">Total pedidos</p>
@@ -66,8 +66,8 @@ export default function AdminVentas() {
               <tr key={v.usuario_id} className="border-t dark:border-gray-700 dark:text-white">
                 <td className="px-6 py-4 font-medium">{v.usuario_nombre}</td>
                 <td className="px-6 py-4">{v.total_pedidos}</td>
-                <td className="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">${v.total_vendido.toFixed(2)}</td>
-                <td className="px-6 py-4">${v.total_pedidos > 0 ? (v.total_vendido / v.total_pedidos).toFixed(2) : '0.00'}</td>
+                <td className="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">Bs${v.total_vendido.toFixed(2)}</td>
+                <td className="px-6 py-4">Bs${v.total_pedidos > 0 ? (v.total_vendido / v.total_pedidos).toFixed(2) : '0.00'}</td>
                 <td className="px-6 py-4">
                   <button onClick={() => setSel(sel?.usuario_id === v.usuario_id ? null : v)} className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">
                     {sel?.usuario_id === v.usuario_id ? 'Ocultar' : 'Ver pedidos'}
@@ -95,7 +95,7 @@ export default function AdminVentas() {
                     p.estado === 'cancelado' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
                     'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300'
                   }`}>{p.estado}</span>
-                  <p className="font-bold dark:text-white">${Number(p.total).toFixed(2)}</p>
+                  <p className="font-bold dark:text-white">Bs${Number(p.total).toFixed(2)}</p>
                 </div>
               </div>
             ))}

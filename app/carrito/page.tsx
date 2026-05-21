@@ -2,7 +2,7 @@
 import { useCarrito } from '@/store/carrito';
 import Link from 'next/link';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-c811d.up.railway.app';
 
 export default function CarritoPage() {
   const { items, quitar, cambiarCantidad, total } = useCarrito();
@@ -39,7 +39,7 @@ export default function CarritoPage() {
             {/* Info */}
             <div className="flex-1">
               <h3 className="font-semibold">{item.nombre}</h3>
-              <p className="text-blue-600 dark:text-blue-400 font-bold">${item.precio}</p>
+              <p className="text-blue-600 dark:text-blue-400 font-bold">Bs${item.precio}</p>
             </div>
 
             {/* Cantidad */}
@@ -65,7 +65,7 @@ export default function CarritoPage() {
 
             {/* Subtotal */}
             <p className="font-bold w-24 text-right">
-              ${(item.precio * item.cantidad).toFixed(2)}
+              Bs${(item.precio * item.cantidad).toFixed(2)}
             </p>
 
             {/* Quitar */}
@@ -82,7 +82,7 @@ export default function CarritoPage() {
       <div className="border-t dark:border-gray-700 pt-6 flex justify-between items-center">
         <div>
           <p className="text-gray-500 dark:text-gray-400">Total</p>
-          <p className="text-3xl font-bold">${total().toFixed(2)}</p>
+          <p className="text-3xl font-bold">Bs${total().toFixed(2)}</p>
         </div>
         <Link href="/checkout"
           className="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-blue-700 text-lg">

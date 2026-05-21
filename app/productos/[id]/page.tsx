@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { useCarrito } from '@/store/carrito';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-c811d.up.railway.app';
 
 interface Producto {
   id: number;
@@ -62,7 +62,7 @@ export default function DetalleProducto() {
           <h1 className="text-3xl font-bold mb-4">{producto.nombre}</h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">{producto.descripcion}</p>
           <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-6">
-            ${Number(producto.precio).toFixed(2)}
+            Bs${Number(producto.precio).toFixed(2)}
           </p>
 
           <div className="flex gap-3 mb-6">
