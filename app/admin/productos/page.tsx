@@ -139,7 +139,7 @@ export default function AdminProductos() {
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">{p.categoria?.nombre}</p>
                 <div className="flex items-center justify-between mt-3">
-                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">Bs${Number(p.precio).toFixed(2)}</p>
+                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">Bs{Number(p.precio).toFixed(2)}</p>
                   <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                     {p.activo ? (
                       <button onClick={() => desactivar(p.id)}

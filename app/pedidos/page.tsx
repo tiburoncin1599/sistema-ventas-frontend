@@ -63,7 +63,7 @@ export default function PedidosPage() {
                 </span>
               </div>
               <p className="text-gray-600 text-sm mb-2">{pedido.direccion_entrega}</p>
-              <p className="font-bold text-blue-600 text-xl">Bs${pedido.total}</p>
+              <p className="font-bold text-blue-600 text-xl">Bs{pedido.total}</p>
             </div>
           ))}
         </div>
