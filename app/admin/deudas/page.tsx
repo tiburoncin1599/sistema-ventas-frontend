@@ -39,12 +39,20 @@ export default function AdminDeudas() {
   const [showPagar, setShowPagar] = useState<Deuda | null>(null);
   const [montoPago, setMontoPago] = useState('');
 
-  const cargar = async () => {
-    const [d, r] = await Promise.all([
-      api.get('/deudas'),
+  const [desde, setDesde] = useState('');
+  const [hasta, setHasta] = useState('');
+
+  const cargar = async (filtroDesde?: string, filtroHasta?: string) => {
+    const params: any = {};
+    const d = filtroDesde || desde;
+    const h = filtroHasta || hasta;
+    if (d) params.desde = d;
+    if (h) params.hasta = h;
+    const [deudasRes, r] = await Promise.all([
+      api.get('/deudas', { params }),
       api.get('/deudas/resumen'),
     ]);
-    setDeudas(d.data);
+    setDeudas(deudasRes.data);
     setResumen(r.data);
     try {
       const u = await api.get('/usuarios');
@@ -54,7 +62,7 @@ export default function AdminDeudas() {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    cargar().finally(() => setCargando(false));
+    cargar(undefined, undefined).finally(() => setCargando(false));
   }, []);
 
   const crearDeuda = async () => {
@@ -66,7 +74,7 @@ export default function AdminDeudas() {
     });
     setShowCrear(false);
     setFormDeuda({ usuarioId: 0, monto: '', descripcion: '' });
-    cargar();
+    cargar(desde, hasta);
   };
 
   const pagarDeuda = async () => {
@@ -74,13 +82,13 @@ export default function AdminDeudas() {
     await api.put(`/deudas/${showPagar.id}/pagar`, { monto: parseFloat(montoPago) });
     setShowPagar(null);
     setMontoPago('');
-    cargar();
+    cargar(desde, hasta);
   };
 
   const eliminarDeuda = async (id: number) => {
     if (!confirm('¿Eliminar esta deuda?')) return;
     await api.delete(`/deudas/${id}`);
-    cargar();
+    cargar(desde, hasta);
   };
 
   const descargarFactura = async (id: number) => {
@@ -120,6 +128,29 @@ export default function AdminDeudas() {
         <button onClick={() => setShowCrear(true)} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700">
           + Nueva deuda
         </button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border dark:border-gray-700">
+        <div>
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Desde</label>
+          <input type="date" value={desde} onChange={e => setDesde(e.target.value)}
+            className="border dark:border-gray-600 rounded-xl px-4 py-2.5 dark:bg-gray-700 dark:text-white text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
+          <input type="date" value={hasta} onChange={e => setHasta(e.target.value)}
+            className="border dark:border-gray-600 rounded-xl px-4 py-2.5 dark:bg-gray-700 dark:text-white text-sm" />
+        </div>
+        <button onClick={() => cargar(desde, hasta)}
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-blue-700 text-sm mt-4">
+          Filtrar
+        </button>
+        {(desde || hasta) && (
+          <button onClick={() => { setDesde(''); setHasta(''); cargar('', ''); }}
+            className="text-gray-500 dark:text-gray-400 hover:underline text-sm mt-4">
+            Limpiar filtro
+          </button>
+        )}
       </div>
 
       {resumen && (

@@ -1,41 +1,59 @@
 'use client';
-import { useState, useEffect } from 'react';
+'use client';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCarrito } from '@/store/carrito';
 import DarkModeToggle from './DarkModeToggle';
 
 function getUsuarioFromStorage(): { nombre: string; rol: string } | null {
   if (typeof window === 'undefined') return null;
-  const u = localStorage.getItem('usuario');
-  return u ? JSON.parse(u) : null;
+  try {
+    const u = localStorage.getItem('usuario');
+    return u ? JSON.parse(u) : null;
+  } catch { return null; }
+}
+
+function useAuth() {
+  const [usuario, setUsuario] = useState<{ nombre: string; rol: string } | null>(null);
+
+  useEffect(() => {
+    setUsuario(getUsuarioFromStorage());
+    const onAuth = () => setUsuario(getUsuarioFromStorage());
+    window.addEventListener('auth-change', onAuth);
+    window.addEventListener('storage', onAuth);
+    return () => {
+      window.removeEventListener('auth-change', onAuth);
+      window.removeEventListener('storage', onAuth);
+    };
+  }, []);
+
+  return usuario;
 }
 
 export default function Navbar() {
+  const router = useRouter();
   const { items } = useCarrito();
   const [mounted, setMounted] = useState(false);
-  const [usuario, setUsuario] = useState<{ nombre: string; rol: string } | null>(null);
+  const usuario = useAuth();
   const [busqueda, setBusqueda] = useState('');
   const cantidadItems = mounted ? items.reduce((sum, i) => sum + i.cantidad, 0) : 0;
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const onStorage = () => setUsuario(getUsuarioFromStorage());
-    window.addEventListener('storage', onStorage);
-    const interval = setInterval(() => setUsuario(getUsuarioFromStorage()), 1000);
-    return () => { window.removeEventListener('storage', onStorage); clearInterval(interval); };
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   const cerrarSesion = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
-    setUsuario(null);
-    window.location.href = '/';
+    document.cookie = 'token=; path=/; max-age=0';
+    document.cookie = 'usuario=; path=/; max-age=0';
+    window.dispatchEvent(new Event('auth-change'));
+    router.push('/');
   };
 
   const buscar = (e: React.FormEvent) => {
     e.preventDefault();
-    if (busqueda.trim()) window.location.href = `/productos?q=${encodeURIComponent(busqueda.trim())}`;
+    if (busqueda.trim()) router.push(`/productos?q=${encodeURIComponent(busqueda.trim())}`);
   };
 
   return (
@@ -76,14 +94,9 @@ export default function Navbar() {
                     <p className="font-medium text-xs truncate max-w-28">{usuario.nombre}</p>
                   </div>
                 </Link>
-                {usuario.rol === 'admin' && (
+                {(usuario.rol === 'admin' || usuario.rol === 'inventario' || usuario.rol === 'ventas') && (
                   <Link href="/admin" className="bg-[#ffd600] text-[#005a24] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-yellow-400">
-                    ADMIN
-                  </Link>
-                )}
-                {usuario.rol === 'inventario' && (
-                  <Link href="/admin" className="bg-[#ffd600] text-[#005a24] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-yellow-400">
-                    PANEL
+                    {usuario.rol === 'admin' ? 'ADMIN' : 'PANEL'}
                   </Link>
                 )}
                 <button onClick={cerrarSesion} className="text-red-200 hover:text-red-100 text-xs font-semibold bg-red-800/30 px-2.5 py-1 rounded-lg">
@@ -139,10 +152,7 @@ export default function Navbar() {
           {usuario ? (
             <>
               <p className="font-bold text-gray-800 dark:text-gray-100">Hola, {usuario.nombre}</p>
-              {usuario.rol === 'admin' && (
-                <Link href="/admin" className="block py-2 text-[#005a24] dark:text-green-400 font-medium" onClick={() => setMenuOpen(false)}>Panel Admin</Link>
-              )}
-              {usuario.rol === 'inventario' && (
+              {(usuario.rol === 'admin' || usuario.rol === 'inventario' || usuario.rol === 'ventas') && (
                 <Link href="/admin" className="block py-2 text-[#005a24] dark:text-green-400 font-medium" onClick={() => setMenuOpen(false)}>Panel Admin</Link>
               )}
               <Link href="/cuenta/pedidos" className="block py-2 text-gray-600 dark:text-gray-300" onClick={() => setMenuOpen(false)}>Mis pedidos</Link>

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 
 interface VentaPersonal {
@@ -14,13 +14,24 @@ export default function AdminVentas() {
   const [ventas, setVentas] = useState<VentaPersonal[]>([]);
   const [cargando, setCargando] = useState(true);
   const [sel, setSel] = useState<VentaPersonal | null>(null);
+  const [desde, setDesde] = useState('');
+  const [hasta, setHasta] = useState('');
+
+  const cargar = useCallback(async () => {
+    setCargando(true);
+    const params: any = {};
+    if (desde) params.desde = desde;
+    if (hasta) params.hasta = hasta;
+    try {
+      const res = await api.get('/pedidos/ventas/personal', { params });
+      setVentas(res.data);
+    } catch {}
+    setCargando(false);
+  }, [desde, hasta]);
 
   useEffect(() => {
-    api.get('/pedidos/ventas/personal')
-      .then(res => setVentas(res.data))
-      .catch(() => {})
-      .finally(() => setCargando(false));
-  }, []);
+    cargar();
+  }, [cargar]);
 
   const totalGeneral = ventas.reduce((s, v) => s + v.total_vendido, 0);
 
@@ -29,7 +40,30 @@ export default function AdminVentas() {
   return (
     <main className="max-w-6xl mx-auto px-8 py-12">
       <h1 className="text-3xl font-bold mb-2 dark:text-white">Historial de Ventas</h1>
-      <p className="text-gray-500 dark:text-gray-400 mb-8">Ventas registradas por cada miembro del personal</p>
+      <p className="text-gray-500 dark:text-gray-400 mb-6">Ventas registradas por cada miembro del personal</p>
+
+      <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border dark:border-gray-700">
+        <div>
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Desde</label>
+          <input type="date" value={desde} onChange={e => setDesde(e.target.value)}
+            className="border dark:border-gray-600 rounded-xl px-4 py-2.5 dark:bg-gray-700 dark:text-white text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Hasta</label>
+          <input type="date" value={hasta} onChange={e => setHasta(e.target.value)}
+            className="border dark:border-gray-600 rounded-xl px-4 py-2.5 dark:bg-gray-700 dark:text-white text-sm" />
+        </div>
+        <button onClick={cargar}
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-blue-700 text-sm mt-4">
+          Filtrar
+        </button>
+        {(desde || hasta) && (
+          <button onClick={() => { setDesde(''); setHasta(''); }}
+            className="text-gray-500 dark:text-gray-400 hover:underline text-sm mt-4">
+            Limpiar filtro
+          </button>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-6">

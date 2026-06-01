@@ -16,6 +16,7 @@ function CallbackContent() {
         localStorage.setItem('usuario', JSON.stringify(usuario));
         document.cookie = `token=${token}; path=/; max-age=604800`;
         document.cookie = `usuario=${encodeURIComponent(JSON.stringify(usuario))}; path=/; max-age=604800`;
+        window.dispatchEvent(new Event('auth-change'));
         window.location.href = '/';
       } catch {
         // eslint-disable-next-line react-hooks/set-state-in-effect

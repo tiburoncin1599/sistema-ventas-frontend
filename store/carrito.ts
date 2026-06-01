@@ -28,8 +28,7 @@ export const useCarrito = create<CarritoStore>()(
 
       agregar: (producto) => {
         const qty = producto.cantidad || 1;
-        const { cantidad, ...datos } = producto;
-        void cantidad;
+        const datos: ProductoCarrito = { id: producto.id, nombre: producto.nombre, precio: producto.precio, imagen_url: producto.imagen_url };
         const items = get().items;
         const existe = items.find(i => i.id === producto.id);
         if (existe) {

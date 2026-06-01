@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 const protectedRoutes = ['/cuenta', '/checkout'];
 const adminRoutes = ['/admin'];
-const adminRoles = ['admin', 'inventario'];
+const adminRoles = ['admin', 'inventario', 'ventas'];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { api } from '@/lib/api';
 
 function AuthContent() {
+  const router = useRouter();
   const [modo, setModo] = useState<'login' | 'registro'>('login');
   const [form, setForm] = useState({ nombre: '', email: '', password: '' });
   const [error, setError] = useState('');
@@ -31,7 +32,8 @@ function AuthContent() {
       localStorage.setItem('usuario', JSON.stringify(res.data.usuario));
       document.cookie = `token=${res.data.token}; path=/; max-age=604800`;
       document.cookie = `usuario=${encodeURIComponent(JSON.stringify(res.data.usuario))}; path=/; max-age=604800`;
-      window.location.href = '/';
+      window.dispatchEvent(new Event('auth-change'));
+      router.push('/');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Ocurrió un error';
       setError(msg);

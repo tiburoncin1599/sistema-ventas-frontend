@@ -13,8 +13,8 @@ const seccionesAdmin = [
   { href: '/admin/productos', titulo: 'Productos', desc: 'Crear, editar y desactivar productos del catálogo', roles: ['admin', 'inventario'] },
   { href: '/admin/inventario', titulo: 'Inventario', desc: 'Controlar stock y cantidades mínimas', roles: ['admin', 'inventario'] },
   { href: '/admin/pedidos', titulo: 'Pedidos', desc: 'Administrar pedidos de clientes', roles: ['admin', 'inventario'] },
-  { href: '/admin/ventas', titulo: 'Ventas', desc: 'Historial de ventas del personal', roles: ['admin', 'inventario'] },
-  { href: '/admin/deudas', titulo: 'Deudas', desc: 'Deudas del personal y generación de facturas', roles: ['admin', 'inventario'] },
+  { href: '/admin/ventas', titulo: 'Ventas', desc: 'Historial de ventas del personal', roles: ['admin', 'inventario', 'ventas'] },
+  { href: '/admin/deudas', titulo: 'Deudas', desc: 'Deudas del personal y generación de facturas', roles: ['admin', 'inventario', 'ventas'] },
   { href: '/admin/usuarios', titulo: 'Usuarios', desc: 'Gestionar empleados y asignar roles (ventas, inventario)', roles: ['admin'] },
   { href: '/admin/clientes', titulo: 'Clientes', desc: 'Registrar y administrar clientes', roles: ['admin'] },
 ];
