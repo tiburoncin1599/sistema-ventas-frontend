@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { api } from '@/lib/api';
+import { formatCurrency, parseCurrency } from '@/lib/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-c811d.up.railway.app';
 
@@ -48,8 +49,8 @@ export default function AdminProductos() {
     setForm({
       nombre: p.nombre,
       descripcion: p.descripcion || '',
-      precio: String(p.precio),
-      precio_costo: String(p.precio_costo || ''),
+      precio: String(parseCurrency(p.precio)),
+      precio_costo: p.precio_costo ? String(parseCurrency(p.precio_costo)) : '',
       categoria_id: String(p.categoria_id || ''),
     });
   };
@@ -58,8 +59,8 @@ export default function AdminProductos() {
     try {
       const payload = {
         ...form,
-        precio: +form.precio,
-        precio_costo: +form.precio_costo || undefined,
+        precio: parseCurrency(form.precio),
+        precio_costo: form.precio_costo ? parseCurrency(form.precio_costo) : undefined,
         categoria_id: +form.categoria_id || undefined,
       };
 
@@ -139,7 +140,7 @@ export default function AdminProductos() {
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">{p.categoria?.nombre}</p>
                 <div className="flex items-center justify-between mt-3">
-                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">Bs{Number(p.precio).toFixed(2)}</p>
+                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{formatCurrency(p.precio)}</p>
                   <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                     {p.activo ? (
                       <button onClick={() => desactivar(p.id)}

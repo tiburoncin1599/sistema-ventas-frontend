@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCarrito } from '@/store/carrito';
 import { api } from '@/lib/api';
+import { formatCurrency, parseCurrency } from '@/lib/utils';
 
 const WHATSAPP_NUMERO = process.env.NEXT_PUBLIC_WHATSAPP || '59170000000';
 
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
         items: items.map(i => ({
           producto_id: i.id,
           cantidad: i.cantidad,
-          precio: i.precio,
+          precio: parseCurrency(i.precio),
         })),
       });
       setPedidoId(res.data.id || res.data.pedido?.id);
@@ -94,12 +95,12 @@ export default function CheckoutPage() {
                   <p className="font-medium">{item.nombre}</p>
                   <p className="text-gray-500 dark:text-gray-400 text-sm">x{item.cantidad}</p>
                 </div>
-                <p className="font-bold">Bs{(item.precio * item.cantidad).toFixed(2)}</p>
+                <p className="font-bold">{formatCurrency(parseCurrency(item.precio) * item.cantidad)}</p>
               </div>
             ))}
             <div className="flex justify-between items-center px-6 py-4 bg-gray-50 dark:bg-gray-800">
               <p className="font-bold text-lg">Total</p>
-              <p className="font-bold text-xl text-blue-600 dark:text-blue-400">Bs{total().toFixed(2)}</p>
+              <p className="font-bold text-xl text-blue-600 dark:text-blue-400">{formatCurrency(total())}</p>
             </div>
           </div>
         </div>

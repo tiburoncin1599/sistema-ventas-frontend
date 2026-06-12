@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api, API_URL } from '@/lib/api';
+import { formatCurrency, parseCurrency } from '@/lib/utils';
 
 interface Pedido {
   id: number;
@@ -108,7 +109,7 @@ export default function AdminPedidos() {
                   {new Date(pedido.creado_en).toLocaleDateString()}
                 </div>
                 <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                  Bs{Number(pedido.total).toFixed(2)}
+                  {formatCurrency(pedido.total)}
                 </p>
               </div>
               <div className="mt-3 pt-3 border-t dark:border-gray-700 flex gap-2" onClick={e => e.stopPropagation()}>
@@ -184,14 +185,14 @@ export default function AdminPedidos() {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium dark:text-white">{d.producto?.nombre}</p>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">x{d.cantidad} @ Bs{Number(d.precio_unitario).toFixed(2)}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">x{d.cantidad} @ {formatCurrency(d.precio_unitario)}</p>
                   </div>
-                  <p className="font-bold dark:text-white">Bs{(d.cantidad * Number(d.precio_unitario)).toFixed(2)}</p>
+                  <p className="font-bold dark:text-white">{formatCurrency(d.cantidad * parseCurrency(d.precio_unitario))}</p>
                 </div>
               ))}
             </div>
 
-            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6">Total: Bs{Number(pedidoSel.total).toFixed(2)}</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6">Total: {formatCurrency(pedidoSel.total)}</p>
 
             {qrImg && (
               <div className="border-t dark:border-gray-700 pt-4 text-center">

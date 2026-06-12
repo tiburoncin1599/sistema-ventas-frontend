@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useMemo } from 'react';
 import { api, apiFetchBlob } from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
 
 interface Deuda {
   id: number;
@@ -165,11 +166,11 @@ export default function AdminDeudas() {
           </div>
           <div className="bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800 rounded-2xl p-5">
             <p className="text-orange-600 dark:text-orange-400 text-sm font-medium">Saldo pendiente</p>
-            <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">Bs{Number(resumen.total_pendiente).toFixed(2)}</p>
+            <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">{formatCurrency(resumen.total_pendiente)}</p>
           </div>
           <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-2xl p-5">
             <p className="text-green-600 dark:text-green-400 text-sm font-medium">Pagado</p>
-            <p className="text-3xl font-bold text-green-700 dark:text-green-300">Bs{Number(resumen.total_pagado).toFixed(2)}</p>
+            <p className="text-3xl font-bold text-green-700 dark:text-green-300">{formatCurrency(resumen.total_pagado)}</p>
           </div>
         </div>
       )}
@@ -210,7 +211,7 @@ export default function AdminDeudas() {
                       <div className="text-right">
                         <p className="text-sm text-gray-500 dark:text-gray-400">Saldo pendiente</p>
                         <p className={`text-xl font-bold ${saldo > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
-                          Bs{saldo.toFixed(2)}
+                          {formatCurrency(saldo)}
                         </p>
                       </div>
                     </div>
@@ -233,9 +234,9 @@ export default function AdminDeudas() {
                           <tr key={d.id} className="border-t dark:border-gray-700 dark:text-white">
                             <td className="px-6 py-4 font-medium text-sm">#{d.id}</td>
                             <td className="px-6 py-4 text-gray-600 dark:text-gray-400 max-w-xs truncate text-sm">{d.descripcion || '\u2014'}</td>
-                            <td className="px-6 py-4 text-sm">Bs{Number(d.monto).toFixed(2)}</td>
-                            <td className="px-6 py-4 text-sm">Bs{Number(d.monto_pagado).toFixed(2)}</td>
-                            <td className="px-6 py-4 font-bold text-sm">Bs{saldoPendiente(d).toFixed(2)}</td>
+                            <td className="px-6 py-4 text-sm">{formatCurrency(d.monto)}</td>
+                            <td className="px-6 py-4 text-sm">{formatCurrency(d.monto_pagado)}</td>
+                            <td className="px-6 py-4 font-bold text-sm">{formatCurrency(saldoPendiente(d))}</td>
                             <td className="px-6 py-4">
                               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getColorEstado(d.estado)}`}>
                                 {d.estado}
@@ -264,9 +265,9 @@ export default function AdminDeudas() {
                       <tfoot>
                         <tr className="border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                           <td colSpan={2} className="px-6 py-3 font-bold text-sm dark:text-white">Total {nombre}</td>
-                          <td className="px-6 py-3 font-bold text-sm dark:text-white">Bs{totalDeuda.toFixed(2)}</td>
-                          <td className="px-6 py-3 font-bold text-sm dark:text-white">Bs{totalPagado.toFixed(2)}</td>
-                          <td className="px-6 py-3 font-bold text-sm dark:text-white">Bs{saldo.toFixed(2)}</td>
+                          <td className="px-6 py-3 font-bold text-sm dark:text-white">{formatCurrency(totalDeuda)}</td>
+                          <td className="px-6 py-3 font-bold text-sm dark:text-white">{formatCurrency(totalPagado)}</td>
+                          <td className="px-6 py-3 font-bold text-sm dark:text-white">{formatCurrency(saldo)}</td>
                           <td colSpan={2} />
                         </tr>
                       </tfoot>
@@ -336,15 +337,15 @@ export default function AdminDeudas() {
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Monto total:</span>
-                <span className="font-bold">Bs{Number(showPagar.monto).toFixed(2)}</span>
+                <span className="font-bold">{formatCurrency(showPagar.monto)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Ya pagado:</span>
-                <span className="font-medium dark:text-white">Bs{Number(showPagar.monto_pagado).toFixed(2)}</span>
+                <span className="font-medium dark:text-white">{formatCurrency(showPagar.monto_pagado)}</span>
               </div>
               <div className="flex justify-between text-lg border-t dark:border-gray-700 pt-3">
                 <span className="font-bold dark:text-white">Saldo pendiente:</span>
-                <span className="font-bold text-orange-600 dark:text-orange-400">Bs{saldoPendiente(showPagar).toFixed(2)}</span>
+                <span className="font-bold text-orange-600 dark:text-orange-400">{formatCurrency(saldoPendiente(showPagar))}</span>
               </div>
             </div>
             <div className="mb-6">

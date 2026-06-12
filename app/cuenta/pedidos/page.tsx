@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
 
 interface Pedido {
   id: number;
@@ -27,6 +28,24 @@ export default function MisPedidos() {
       .catch(() => setPedidos([]))
       .finally(() => setCargando(false));
   }, [router]);
+
+  const descargarFactura = async (id: number) => {
+    try {
+      const res = await api.get(`/pedidos/${id}/factura/pdf`, {
+        responseType: 'blob',
+      });
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `factura-${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      alert('Error al descargar la factura');
+    }
+  };
 
   const getColorEstado = (estado: string) => {
     const colores: Record<string, string> = {
@@ -63,7 +82,13 @@ export default function MisPedidos() {
                 </span>
               </div>
               <p className="text-gray-600 text-sm mb-2">{pedido.direccion_entrega}</p>
-              <p className="font-bold text-blue-600 text-xl">Bs{pedido.total}</p>
+              <p className="font-bold text-blue-600 text-xl">{formatCurrency(pedido.total)}</p>
+              <button
+                onClick={() => descargarFactura(pedido.id)}
+                className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-xl transition-colors"
+              >
+                Descargar Factura
+              </button>
             </div>
           ))}
         </div>

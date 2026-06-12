@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useMemo } from 'react';
 import { api } from '@/lib/api';
+import { formatCurrency, parseCurrency } from '@/lib/utils';
 
 interface ItemInventario {
   id: number;
@@ -137,10 +138,10 @@ export default function AdminInventario() {
                     <tr key={d.id} className="border-t dark:border-gray-700 dark:text-white">
                       <td className="px-6 py-4 font-medium text-sm">{d.usuario?.nombre || '—'}</td>
                       <td className="px-6 py-4 text-gray-600 dark:text-gray-400 text-sm">{d.descripcion || '—'}</td>
-                      <td className="px-6 py-4 text-sm">Bs{Number(d.monto).toFixed(2)}</td>
-                      <td className="px-6 py-4 text-sm">Bs{Number(d.monto_pagado).toFixed(2)}</td>
+                      <td className="px-6 py-4 text-sm">{formatCurrency(d.monto)}</td>
+                      <td className="px-6 py-4 text-sm">{formatCurrency(d.monto_pagado)}</td>
                       <td className={`px-6 py-4 font-bold text-sm ${saldo > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
-                        Bs{saldo.toFixed(2)}
+                        {formatCurrency(saldo)}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${colorEstado[d.estado] || ''}`}>{d.estado}</span>
@@ -190,7 +191,7 @@ export default function AdminInventario() {
                     <tr key={p.id} className="border-t dark:border-gray-700 dark:text-white">
                       <td className="px-6 py-4 font-bold text-sm">#{p.id}</td>
                       <td className="px-6 py-4 text-sm">{p.usuario?.nombre}</td>
-                      <td className="px-6 py-4 text-sm font-medium">Bs{Number(p.total).toFixed(2)}</td>
+                      <td className="px-6 py-4 text-sm font-medium">{formatCurrency(p.total)}</td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${color[p.estado] || ''}`}>{p.estado}</span>
                       </td>
@@ -255,9 +256,9 @@ export default function AdminInventario() {
                             <p className="text-xs text-gray-500 dark:text-gray-400">Mín: {item.cantidad_minima}</p>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-gray-900 dark:text-white">Bs{Number(item.producto?.precio).toFixed(2)}</p>
+                            <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(item.producto?.precio)}</p>
                             {item.producto?.precio_por_docena && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Docena: Bs{Number(item.producto.precio_por_docena).toFixed(2)}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Docena: {formatCurrency(item.producto.precio_por_docena)}</p>
                             )}
                           </div>
                         </div>
@@ -266,7 +267,7 @@ export default function AdminInventario() {
                             {estilo.label}
                           </span>
                           <span className="text-xs text-gray-400 dark:text-gray-500">
-                            Bs{(item.cantidad * Number(item.producto?.precio)).toFixed(2)} en stock
+                            {formatCurrency(item.cantidad * parseCurrency(item.producto?.precio))} en stock
                           </span>
                         </div>
                       </div>
@@ -287,7 +288,7 @@ export default function AdminInventario() {
                       className={`bg-white dark:bg-gray-800 border rounded-2xl p-5 hover:shadow-lg dark:hover:shadow-gray-900/50 transition-shadow cursor-pointer ${estilo.bg}`}>
                       <p className="font-bold text-gray-900 dark:text-white truncate">{item.producto?.nombre}</p>
                       <p className={`text-3xl font-bold ${estilo.text}`}>{item.cantidad}</p>
-                      <p className="font-bold text-gray-900 dark:text-white">Bs{Number(item.producto?.precio).toFixed(2)}</p>
+                      <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(item.producto?.precio)}</p>
                     </div>
                   );
                 })}
@@ -325,23 +326,23 @@ export default function AdminInventario() {
               <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4">
                 <div className="flex justify-between items-center py-1">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Precio venta</span>
-                  <span className="font-bold dark:text-white">Bs{Number(modalItem.producto?.precio).toFixed(2)}</span>
+                  <span className="font-bold dark:text-white">{formatCurrency(modalItem.producto?.precio)}</span>
                 </div>
                 {modalItem.producto?.precio_costo && (
                   <div className="flex justify-between items-center py-1">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Precio costo</span>
-                    <span className="font-medium dark:text-white">Bs{Number(modalItem.producto.precio_costo).toFixed(2)}</span>
+                    <span className="font-medium dark:text-white">{formatCurrency(modalItem.producto.precio_costo)}</span>
                   </div>
                 )}
                 {modalItem.producto?.precio_por_docena && (
                   <div className="flex justify-between items-center py-1">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Precio por docena</span>
-                    <span className="font-medium dark:text-white">Bs{Number(modalItem.producto.precio_por_docena).toFixed(2)}</span>
+                    <span className="font-medium dark:text-white">{formatCurrency(modalItem.producto.precio_por_docena)}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center py-1 border-t dark:border-gray-600 mt-1 pt-2">
                   <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Valor total stock</span>
-                  <span className="font-bold text-blue-600 dark:text-blue-400">Bs{(modalItem.cantidad * Number(modalItem.producto?.precio)).toFixed(2)}</span>
+                  <span className="font-bold text-blue-600 dark:text-blue-400">{formatCurrency(modalItem.cantidad * parseCurrency(modalItem.producto?.precio))}</span>
                 </div>
               </div>
 

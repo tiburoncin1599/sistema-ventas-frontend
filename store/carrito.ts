@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { parseCurrency } from '@/lib/utils';
 
 export interface ProductoCarrito {
   id: number;
@@ -28,7 +29,7 @@ export const useCarrito = create<CarritoStore>()(
 
       agregar: (producto) => {
         const qty = producto.cantidad || 1;
-        const datos: ProductoCarrito = { id: producto.id, nombre: producto.nombre, precio: producto.precio, imagen_url: producto.imagen_url };
+        const datos: ProductoCarrito = { id: producto.id, nombre: producto.nombre, precio: parseCurrency(producto.precio), imagen_url: producto.imagen_url };
         const items = get().items;
         const existe = items.find(i => i.id === producto.id);
         if (existe) {
@@ -54,7 +55,7 @@ export const useCarrito = create<CarritoStore>()(
 
       vaciar: () => set({ items: [] }),
 
-      total: () => get().items.reduce((sum, i) => sum + i.precio * i.cantidad, 0),
+      total: () => get().items.reduce((sum, i) => sum + parseCurrency(i.precio) * i.cantidad, 0),
     }),
     { name: 'carrito-storage' },
   ),

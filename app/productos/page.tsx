@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
 import { useCarrito } from '@/store/carrito';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://web-production-c811d.up.railway.app';
@@ -61,7 +62,7 @@ export default function ProductosPage() {
                   <div className="no-underline">
                     <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg leading-tight">{producto.nombre}</h3>
                     <p className="text-blue-700 dark:text-blue-400 font-extrabold text-2xl mt-1">
-                      {'Bs'}{Number(producto.precio).toFixed(2)}
+                      {formatCurrency(producto.precio)}
                     </p>
                 </div>
                 <div className="mt-3 flex gap-2">

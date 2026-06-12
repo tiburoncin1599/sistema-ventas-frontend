@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api, API_URL } from '@/lib/api';
+import { formatCurrency } from '@/lib/utils';
 
 interface Producto {
   id: number;
@@ -83,7 +84,7 @@ export default function Home() {
                 </div>
                 <div className="p-4">
                   <p className="text-sm text-gray-800 dark:text-gray-200 font-medium line-clamp-2 mb-2">{p.nombre}</p>
-                  <p className="text-xl font-bold text-[#005a24] dark:text-green-400">Bs {Number(p.precio).toFixed(2)}</p>
+                  <p className="text-xl font-bold text-[#005a24] dark:text-green-400">{formatCurrency(p.precio)}</p>
                 </div>
               </Link>
             ))}
