@@ -14,5 +14,5 @@ export function parseCurrency(value: unknown): number {
 export function formatCurrency(value: unknown): string {
   const num = parseCurrency(value);
   if (!Number.isFinite(num)) return 'Bs0.00';
-  return 'Bs' + num.toFixed(2).replace(/\$/g, '');
+  return ('Bs' + num.toFixed(2)).replace(/\$/g, '').replace(/Bs\$/g, 'Bs');
 }
