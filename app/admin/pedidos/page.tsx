@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { api, API_URL } from '@/lib/api';
+import { api, apiFetchBlob, API_URL } from '@/lib/api';
 import { formatCurrency, parseCurrency } from '@/lib/utils';
 
 interface Pedido {
@@ -61,7 +61,9 @@ export default function AdminPedidos() {
     try {
       const res = await api.get(`/pedidos/${id}/factura/qr`);
       setQrImg(res.data.qr);
-    } catch {}
+    } catch {
+      alert('Error al generar el QR. Verificá que el pedido tenga datos válidos.');
+    }
   };
 
   const eliminarPedido = async (id: number) => {
@@ -212,17 +214,15 @@ export default function AdminPedidos() {
                   <button
                     onClick={async () => {
                       try {
-                        const res = await api.get(`/pedidos/${pedidoSel.id}/factura/pdf`, {
-                          responseType: 'blob',
-                        });
-                        const url = URL.createObjectURL(res.data);
+                        const blob = await apiFetchBlob(`/pedidos/${pedidoSel.id}/factura/pdf`);
+                        const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
                         a.download = `factura-${pedidoSel.id}.pdf`;
                         a.click();
-                        URL.revokeObjectURL(url);
+                        setTimeout(() => URL.revokeObjectURL(url), 1000);
                       } catch {
-                        alert('Error al descargar el PDF');
+                        alert('Error al descargar el PDF. Revisá que el pedido tenga datos de facturación.');
                       }
                     }}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700">
