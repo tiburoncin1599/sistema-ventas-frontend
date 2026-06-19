@@ -27,7 +27,7 @@ export default function AdminProductos() {
 
   const cargarDatos = async () => {
     const [prods, cats] = await Promise.all([
-      api.get('/productos'),
+      api.get('/productos?todos=true'),
       api.get('/categorias'),
     ]);
     setProductos(prods.data);
@@ -122,11 +122,11 @@ export default function AdminProductos() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
           {productos.map(p => (
-            <div
-              key={p.id}
-              onClick={() => abrirEditar(p)}
-              className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900/50 transition-shadow cursor-pointer"
-            >
+              <div
+                key={p.id}
+                onClick={() => abrirEditar(p)}
+                className={`bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-lg dark:hover:shadow-gray-900/50 transition-shadow cursor-pointer ${!p.activo ? 'opacity-40' : ''}`}
+              >
               <div className="h-36 bg-gray-50 dark:bg-gray-700 flex items-center justify-center p-4">
                 {p.imagen_url
                   ? <img src={`${API_URL}${p.imagen_url}`} alt={p.nombre} className="w-full h-full object-contain" />
