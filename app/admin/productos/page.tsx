@@ -27,7 +27,7 @@ export default function AdminProductos() {
 
   const cargarDatos = async () => {
     const [prods, cats] = await Promise.all([
-      api.get('/productos?todos=true'),
+      api.get('/productos/admin'),
       api.get('/categorias'),
     ]);
     setProductos(prods.data);
