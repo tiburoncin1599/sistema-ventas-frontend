@@ -70,24 +70,26 @@ export default function Home() {
             <p>Cargando productos...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {productos.map(p => (
-              <Link key={p.id} href={`/productos/${p.id}`}
-                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow group">
-                <div className="aspect-square bg-gray-50 dark:bg-gray-700 flex items-center justify-center p-4">
-                  {p.imagen_url
-                    ? <img src={`${API_URL}${p.imagen_url}`} alt={p.nombre}
-                        className="object-contain w-full h-full group-hover:scale-105 transition-transform"
-                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<span class=text-5xl>🧴</span>'; }} />
-                    : <span className="text-5xl">🧴</span>
-                  }
-                </div>
-                <div className="p-4">
-                  <p className="text-sm text-gray-800 dark:text-gray-200 font-medium line-clamp-2 mb-2">{p.nombre}</p>
-                  <p className="text-xl font-bold text-[#005a24] dark:text-green-400">{formatCurrency(p.precio)}</p>
-                </div>
-              </Link>
-            ))}
+          <div className="scroll-container">
+            <div className="scroll-track">
+              {[...productos, ...productos].map((p, i) => (
+                <Link key={`${p.id}-${i}`} href={`/productos/${p.id}`}
+                  className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow group min-w-[180px] md:min-w-[220px] w-[180px] md:w-[220px] flex-shrink-0">
+                  <div className="aspect-square bg-gray-50 dark:bg-gray-700 flex items-center justify-center p-4">
+                    {p.imagen_url
+                      ? <img src={`${API_URL}${p.imagen_url}`} alt={p.nombre}
+                          className="object-contain w-full h-full group-hover:scale-105 transition-transform"
+                          onError={e => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).parentElement!.innerHTML = '<span class=text-5xl>🧴</span>'; }} />
+                      : <span className="text-5xl">🧴</span>
+                    }
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-gray-800 dark:text-gray-200 font-medium line-clamp-2 mb-2">{p.nombre}</p>
+                    <p className="text-xl font-bold text-[#005a24] dark:text-green-400">{formatCurrency(p.precio)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </section>

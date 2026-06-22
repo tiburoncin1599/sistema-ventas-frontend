@@ -16,3 +16,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scroll-track {
+  display: flex;
+  gap: 1rem;
+  animation: scroll 40s linear infinite;
+  width: max-content;
+}
+
+.scroll-track:hover {
+  animation-play-state: paused;
+}
+
+.scroll-container {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
