@@ -4,6 +4,27 @@ import Link from 'next/link';
 import { api, API_URL } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 
+const styles = `
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .scroll-track {
+    display: flex;
+    gap: 1rem;
+    animation: scroll 40s linear infinite;
+    width: max-content;
+  }
+  .scroll-track:hover {
+    animation-play-state: paused;
+  }
+  .scroll-container {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  }
+`;
+
 interface Producto {
   id: number;
   nombre: string;
@@ -23,6 +44,7 @@ export default function Home() {
 
   return (
     <main className="dark:bg-gray-900 dark:text-gray-100 min-h-screen">
+      <style>{styles}</style>
       {/* Hero Banner */}
       <section className="bg-gradient-to-br from-[#005a24] via-[#008f39] to-[#00b84c] text-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col md:flex-row items-center gap-8">
