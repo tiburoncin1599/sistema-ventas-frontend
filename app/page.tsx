@@ -1,29 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { api, API_URL } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
-
-const styles = `
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .scroll-track {
-    display: flex;
-    gap: 1rem;
-    animation: scroll 40s linear infinite;
-    width: max-content;
-  }
-  .scroll-track:hover {
-    animation-play-state: paused;
-  }
-  .scroll-container {
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-  }
-`;
 
 interface Producto {
   id: number;
@@ -35,6 +14,8 @@ interface Producto {
 export default function Home() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [error, setError] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
 
   useEffect(() => {
     api.get('/productos')
@@ -42,9 +23,34 @@ export default function Home() {
       .catch(() => setError(true));
   }, []);
 
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || productos.length === 0) return;
+
+    let animationId: number;
+    let startTime: number | null = null;
+    const duration = 40000;
+    const totalWidth = track.scrollWidth / 2;
+
+    function step(timestamp: number) {
+      if (!pausedRef.current) {
+        if (startTime === null) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = (elapsed % duration) / duration;
+        track!.style.transform = `translateX(-${progress * totalWidth}px)`;
+      } else {
+        startTime = null;
+      }
+      animationId = requestAnimationFrame(step);
+    }
+
+    animationId = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationId);
+  }, [productos]);
+
   return (
     <main className="dark:bg-gray-900 dark:text-gray-100 min-h-screen">
-      <style>{styles}</style>
       {/* Hero Banner */}
       <section className="bg-gradient-to-br from-[#005a24] via-[#008f39] to-[#00b84c] text-white">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col md:flex-row items-center gap-8">
@@ -92,8 +98,10 @@ export default function Home() {
             <p>Cargando productos...</p>
           </div>
         ) : (
-          <div className="scroll-container">
-            <div className="scroll-track">
+          <div style={{ overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)' }}>
+            <div ref={trackRef} style={{ display: 'flex', gap: '1rem', width: 'max-content', willChange: 'transform' }}
+              onMouseEnter={() => { pausedRef.current = true; }}
+              onMouseLeave={() => { pausedRef.current = false; }}>
               {[...productos, ...productos].map((p, i) => (
                 <Link key={`${p.id}-${i}`} href={`/productos/${p.id}`}
                   className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow group min-w-[180px] md:min-w-[220px] w-[180px] md:w-[220px] flex-shrink-0">
